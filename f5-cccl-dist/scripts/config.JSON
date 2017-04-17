@@ -1,0 +1,10 @@
+{
+    "dist_dir": "/var/wdir/f5-openstack-agent-dist",
+    "project": "f5-openstack-agent",
+    "rpm_pkg": "/var/wdir/f5-openstack-agent-dist/rpms/build/f5-openstack-agent-8.2.0-1.el7.noarch.rpm",
+    "scripts": "/var/wdir/f5-openstack-agent-dist/scripts",
+    "setup_cfg": "/var/wdir/setup.cfg",
+    "setup_requirements": "/var/wdir/setup_requirements.txt",
+    "stdeb_cfg": "/var/wdir/f5-openstack-agent-dist/deb_dist/stdeb.cfg",
+    "working": "/var/wdir"
+}

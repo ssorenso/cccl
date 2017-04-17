@@ -1,0 +1,11 @@
+[run]
+omit =
+    # omit the *-dist directory
+    */f5-cccl-dist/*
+
+    # omit the conftest?
+    conftest.py
+    setup.py
+
+    # This file is only used in unit tests
+    f5/utils/iapp_parser.py
