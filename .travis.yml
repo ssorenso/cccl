@@ -6,9 +6,13 @@ sudo: true
 env:
   global:
     - REPO="f5-cccl"
+    - DIST_REPO="${REPO}-dist"
     - PKG_VERSION=$(python -c "import f5_cccl; print f5_cccl.__version__")
-# services:  # needed for later work to build .deb and .rpm natively
-#   - docker
+    - PKG_RELEASE=$(python ${DIST_REPO}/scripts/get-version-release.py --release)
+    - PKG_RELEASE_EL7=${DIST_REPO}/rpms/build/${REPO}-${PKG_VERSION}-${PKG_RELEASE}.el7.noarch.rpm
+    - PKG_RELEASE_1404=${DIST_REPO}/deb_dist/python-${REPO}_${PKG_VERSION}-${PKG_RELEASE}_1404_all.deb
+services:
+  - docker
 before_install:
   - git config --global user.email "OpenStack_TravisCI@f5.com"
   - git config --global user.name "Travis F5 Openstack"
@@ -17,8 +21,15 @@ install:
   - pip install tox
   - pip install -r requirements.test.txt
   - pip install -r requirements.docs.txt
-  - python ./setup.py install
+  - pip install -r setup_requirements.txt
 script:
   - tox -e flake
   - tox -e unit
+  - python ./setup.py sdist
+  - ${DIST_REPO}/scripts/build_pkgs.py
+  - sudo chown -R travis:travis ${DIST_REPO}/rpms/build
+  - sudo chown travis:travis ${DIST_REPO}/deb_dist/*.deb
+after_success:
+  - md5sum ${PKG_RELEASE_EL7} > ${PKG_RELEASE_EL7}.md5 && md5sum --check ${PKG_RELEASE_EL7}.md5
+  - md5sum ${PKG_RELEASE_1404} > ${PKG_RELEASE_1404}.md5 && md5sum --check ${PKG_RELASE_1404}.md5
 before_deploy: PKG_VERSION=$(python -c "import f5; print(f5_cccl.__version__)")
